@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles.css";
 
 import Card from "../../Componentes/Card";
@@ -7,6 +7,7 @@ function Home() {
   const [studentName, setStudentName] = useState("");
   // O primeiro é onde vai armazenar e o segundo e o segundo é a função que armazena esse estado
   const [students, setStudents] = useState([]);
+  const [user, setUser] = useState({ name: "", avatar: "" });
 
   function handleAddStudent() {
     const newStudent = {
@@ -21,10 +22,27 @@ function Home() {
     setStudents((prevState) => [...prevState, newStudent]);
   }
 
+  // o useEffect é executado automaticamente assim que a interface for renderizada
+  useEffect(() => {
+    fetch("https://api.github.com/users/SergioMFilho")
+      .then((response) => response.json())
+      .then((data) => {
+        setUser({
+          name: data.name,
+          avatar: data.avatar_url,
+        });
+      });
+  }, []);
+
   return (
     <div className="container">
-      <h1>Lista de Presença</h1>
-
+      <header>
+        <h1>Lista de Presença</h1>
+        <div>
+          <strong>{user.name}</strong>
+          <img src={user.avatar} alt="" />
+        </div>
+      </header>
       <input
         type="text"
         placeholder="Digite o nome..."
